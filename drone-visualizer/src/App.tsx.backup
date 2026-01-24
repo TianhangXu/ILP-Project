@@ -1,0 +1,179 @@
+﻿import { useState, useEffect } from 'react';
+import { message } from 'antd';
+import AppLayout from './components/Layout/AppLayout';
+import DroneMap from './components/Map/DroneMap';
+import OrderForm from './components/Control/OrderForm';
+import OrderList from './components/Control/OrderList';
+import CalculateButton from './components/Control/CalculateButton';
+import ProgressMonitor from './components/Monitor/ProgressMonitor';
+import PerformanceChart from './components/Monitor/PerformanceChart';
+import { wsService } from './services/websocket';
+import { getInitData, calculateDeliveryPathAsGeoJson } from './services/api';
+import type {
+  MedDispatchRec,
+  InitData,
+  PathfindingProgress,
+  DeliveryPathResponse,
+} from './types';
+import './App.css';
+
+function App() {
+  const [initData, setInitData] = useState<InitData | null>(null);
+  const [orders, setOrders] = useState<MedDispatchRec[]>([]);
+  const [geoJsonData, setGeoJsonData] = useState<any>(null);
+  const [progress, setProgress] = useState<PathfindingProgress[]>([]);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [calculationResult, setCalculationResult] = useState<DeliveryPathResponse | null>(null);
+  const [calculationTime, setCalculationTime] = useState(0);
+
+  useEffect(() => {
+    const loadInitData = async () => {
+      try {
+        const data = await getInitData();
+        setInitData(data);
+        message.success('Map data loaded successfully');
+      } catch (error) {
+        console.error('Failed to load init data:', error);
+        message.error('Failed to load map data');
+      }
+    };
+
+    loadInitData();
+
+    wsService.connect();
+
+    const unsubscribeMessage = wsService.onMessage((msg) => {
+      setProgress((prev) => [...prev, msg]);
+    });
+
+    const unsubscribeConnection = wsService.onConnectionChange((connected) => {
+      setIsConnected(connected);
+      if (connected) {
+        message.success('WebSocket connected');
+      } else {
+        message.warning('WebSocket disconnected');
+      }
+    });
+
+    return () => {
+      unsubscribeMessage();
+      unsubscribeConnection();
+      wsService.disconnect();
+    };
+  }, []);
+
+  const handleAddOrder = (order: MedDispatchRec) => {
+    setOrders((prev) => [...prev, order]);
+    message.success(`Order #${order.id} added`);
+  };
+
+  const handleRemoveOrder = (id: number) => {
+    setOrders((prev) => prev.filter((o) => o.id !== id));
+    message.info(`Order #${id} removed`);
+  };
+
+    const handleClearAll = () => {
+    setOrders([]);
+    setGeoJsonData(null);
+    setProgress([]);
+    setCalculationResult(null);
+    message.info('All orders cleared');
+  };
+
+  const handleLoadScenario = (scenarioOrders: MedDispatchRec[]) => {
+    setOrders(scenarioOrders);
+    setGeoJsonData(null);
+    setProgress([]);
+    setCalculationResult(null);
+  };
+
+  const handleCalculate = async () => {
+    if (orders.length === 0) {
+      message.warning('Please add at least one order');
+      return;
+    }
+
+    setIsCalculating(true);
+    setProgress([]);
+    setGeoJsonData(null);
+    setCalculationResult(null);
+
+    const startTime = performance.now();
+
+    try {
+      const geoJson = await calculateDeliveryPathAsGeoJson(orders);
+
+      const endTime = performance.now();
+      setCalculationTime(Math.round(endTime - startTime));
+
+      setGeoJsonData(geoJson);
+
+      if (geoJson.features) {
+        const pathFeatures = geoJson.features.filter(
+          (feature: any) => feature.geometry.type === 'LineString'
+        );
+
+        const mockResult: DeliveryPathResponse = {
+          totalCost: 0,
+          totalMoves: 0,
+          dronePaths: [],
+        };
+        setCalculationResult(mockResult);
+      }
+
+      message.success('Path calculated successfully!');
+    } catch (error) {
+      console.error('Calculation failed:', error);
+      message.error('Failed to calculate path');
+    } finally {
+      setIsCalculating(false);
+    }
+  };
+
+  return (
+    <AppLayout
+      leftPanel={
+        <div style={{ padding: '20px' }}>
+          <h3 style={{ marginTop: 0 }}>Add Delivery Order</h3>
+          <OrderForm onAddOrder={handleAddOrder} />
+          <OrderList
+            orders={orders}
+            onRemoveOrder={handleRemoveOrder}
+            onClearAll={handleClearAll}
+          />
+          <CalculateButton
+            orders={orders}
+            isCalculating={isCalculating}
+            onCalculate={handleCalculate}
+            onLoadScenario={handleLoadScenario}
+          />
+        </div>
+      }
+      map={
+        <DroneMap
+          initData={initData}
+          geoJsonData={geoJsonData}
+          exploredNodes={progress}
+          isCalculating={isCalculating}
+        />
+      }
+      rightPanel={
+        <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: 20, height: '100%' }}>
+          <div style={{ flex: 1, minHeight: 0 }}>
+            <ProgressMonitor progress={progress} isConnected={isConnected} />
+          </div>
+          <div style={{ flex: 1, minHeight: 0 }}>
+            <PerformanceChart
+              result={calculationResult}
+              progress={progress}
+              calculationTime={calculationTime}
+            />
+          </div>
+        </div>
+      }
+    />
+  );
+}
+
+export default App;

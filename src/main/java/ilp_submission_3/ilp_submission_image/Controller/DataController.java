@@ -26,28 +26,18 @@ public class DataController {
         this.droneService = droneService;
     }
 
-    /**
-     * 获取所有禁飞区域
-     * 返回格式与 ILP REST API 一致
-     */
     @GetMapping("/restricted-areas")
     public ResponseEntity<List<RestrictedArea>> getRestrictedAreas() {
         List<RestrictedArea> areas = pathPlanningService.getRestrictedAreas();
         return ResponseEntity.ok(areas);
     }
 
-    /**
-     * 获取所有服务点
-     */
     @GetMapping("/service-points")
     public ResponseEntity<List<DroneServicePoint>> getServicePoints() {
         List<DroneServicePoint> servicePoints = droneService.getServicePointLocations();
         return ResponseEntity.ok(servicePoints);
     }
 
-    /**
-     * 获取所有无人机
-     */
     @GetMapping("/drones")
     public ResponseEntity<List<Drone>> getDrones() {
         List<Drone> drones = droneService.getAllDrones();

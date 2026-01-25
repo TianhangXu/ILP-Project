@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DroneController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ilp_submission_image</a> &gt; <a href="index.source.html" class="el_package">ilp_submission_3.ilp_submission_image.Controller</a> &gt; <span class="el_source">DroneController.java</span></div><h1>DroneController.java</h1><pre class="source lang-java linenums">package ilp_submission_3.ilp_submission_image.Controller;
+
+import ilp_submission_3.ilp_submission_image.dto.DeliveryPathResponse;
+import ilp_submission_3.ilp_submission_image.Service.DroneService;
+import ilp_submission_3.ilp_submission_image.Service.PathPlanningService;
+import ilp_submission_3.ilp_submission_image.dto.DeliveryPathResponse;
+import ilp_submission_3.ilp_submission_image.dto.Drone;
+import ilp_submission_3.ilp_submission_image.dto.MedDispatchRec;
+import ilp_submission_3.ilp_submission_image.dto.QueryAttribute;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping(&quot;/api/v1&quot;)
+public class DroneController {
+    private final DroneService droneService;
+    private final PathPlanningService pathPlanningService;
+
+<span class="fc" id="L23">    public DroneController(DroneService droneService, PathPlanningService pathPlanningService) {</span>
+<span class="fc" id="L24">        this.droneService = droneService;</span>
+<span class="fc" id="L25">        this.pathPlanningService = pathPlanningService;</span>
+<span class="fc" id="L26">    }</span>
+
+    @GetMapping(&quot;/dronesWithCooling/{state}&quot;)
+    public ResponseEntity&lt;List&lt;String&gt;&gt; dronesWithCooling(@PathVariable boolean state) {
+<span class="fc" id="L30">        List&lt;String&gt; droneIds = droneService.getDronesWithCooling(state);</span>
+<span class="fc" id="L31">        return ResponseEntity.ok(droneIds);</span>
+    }
+
+
+    @GetMapping(&quot;/droneDetails/{id}&quot;)
+    public ResponseEntity&lt;Drone&gt; droneDetails(@PathVariable String id) {
+<span class="fc" id="L37">        Drone drone = droneService.getDroneById(id);</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (drone == null) {</span>
+<span class="fc" id="L39">            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();</span>
+        }
+<span class="nc" id="L41">        return ResponseEntity.ok(drone);</span>
+    }
+
+    @GetMapping(&quot;/queryAsPath/{attributeName}/{attributeValue}&quot;)
+    public ResponseEntity&lt;List&lt;String&gt;&gt; queryAsPath(
+            @PathVariable String attributeName,
+            @PathVariable String attributeValue) {
+<span class="fc" id="L48">        List&lt;String&gt; droneIds = droneService.queryDronesByPath(attributeName, attributeValue);</span>
+<span class="fc" id="L49">        return ResponseEntity.ok(droneIds);</span>
+    }
+
+    @PostMapping(&quot;/query&quot;)
+    public ResponseEntity&lt;List&lt;String&gt;&gt; query(@RequestBody List&lt;QueryAttribute&gt; queryAttributes) {
+<span class="fc" id="L54">        List&lt;String&gt; droneIds = droneService.queryDrones(queryAttributes);</span>
+<span class="fc" id="L55">        return ResponseEntity.ok(droneIds);</span>
+    }
+
+    @PostMapping(&quot;/queryAvailableDrones&quot;)
+    public ResponseEntity&lt;List&lt;String&gt;&gt; queryAvailableDrones(
+            @RequestBody List&lt;MedDispatchRec&gt; dispatchRecords) {
+<span class="fc" id="L61">        List&lt;String&gt; droneIds = droneService.queryAvailableDrones(dispatchRecords);</span>
+<span class="fc" id="L62">        return ResponseEntity.ok(droneIds);</span>
+    }
+
+    @PostMapping(&quot;/calcDeliveryPath&quot;)
+    public ResponseEntity&lt;DeliveryPathResponse&gt; calculateDeliveryPath(
+            @RequestBody List&lt;MedDispatchRec&gt; dispatchRecords) {
+<span class="fc" id="L68">        DeliveryPathResponse response = pathPlanningService.calculateDeliveryPath(dispatchRecords);</span>
+<span class="fc" id="L69">        return ResponseEntity.ok(response);</span>
+    }
+
+    @PostMapping(&quot;/calcDeliveryPathAsGeoJson&quot;)
+    public ResponseEntity&lt;String&gt; calcDeliveryPathAsGeoJson(
+            @RequestBody List&lt;MedDispatchRec&gt; dispatchRecords) {
+<span class="fc" id="L75">        String geoJson = pathPlanningService.calculateDeliveryPathAsGeoJson(dispatchRecords);</span>
+<span class="fc" id="L76">        return ResponseEntity.ok(geoJson);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ILPEndpointProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ilp_submission_image</a> &gt; <a href="index.source.html" class="el_package">ilp_submission_3.ilp_submission_image.Configuration</a> &gt; <span class="el_source">ILPEndpointProvider.java</span></div><h1>ILPEndpointProvider.java</h1><pre class="source lang-java linenums">package ilp_submission_3.ilp_submission_image.Configuration;
+
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L6">public class ILPEndpointProvider {</span>
+
+    private static final String DEFAULT_ENDPOINT =
+            &quot;https://ilp-rest-2025-bvh6e9hschfagrgy.ukwest-01.azurewebsites.net&quot;;
+
+    public String getEndpoint() {
+<span class="fc" id="L12">        String endpoint = System.getenv(&quot;ILP_ENDPOINT&quot;);</span>
+<span class="pc bpc" id="L13" title="3 of 4 branches missed.">        if (endpoint == null || endpoint.isEmpty()) {</span>
+<span class="fc" id="L14">            return DEFAULT_ENDPOINT;</span>
+        }
+<span class="nc" id="L16">        return endpoint;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

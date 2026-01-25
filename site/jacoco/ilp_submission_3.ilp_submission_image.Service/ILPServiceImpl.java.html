@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ILPServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ilp_submission_image</a> &gt; <a href="index.source.html" class="el_package">ilp_submission_3.ilp_submission_image.Service</a> &gt; <span class="el_source">ILPServiceImpl.java</span></div><h1>ILPServiceImpl.java</h1><pre class="source lang-java linenums">package ilp_submission_3.ilp_submission_image.Service;
+
+import ilp_submission_3.ilp_submission_image.dto.Position;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
+/**
+ * Implementation of ILPServiceInterface providing geometric calculations for the ILP REST service.
+ * Handles distance calculations, proximity checks, position movements, and region containment.
+ */
+@Service
+<span class="fc" id="L15">public class ILPServiceImpl implements ILPServiceInterface {</span>
+<span class="fc" id="L16">    private static final BigDecimal MOVE_STEP = new BigDecimal(&quot;0.00015&quot;);</span>
+
+    @Override
+    public double distance(Position p1, Position p2) {
+        // Convert positions to BigDecimal for precise arithmetic
+<span class="fc" id="L21">        BigDecimal lng1 = BigDecimal.valueOf(p1.lng());</span>
+<span class="fc" id="L22">        BigDecimal lat1 = BigDecimal.valueOf(p1.lat());</span>
+<span class="fc" id="L23">        BigDecimal lng2 = BigDecimal.valueOf(p2.lng());</span>
+<span class="fc" id="L24">        BigDecimal lat2 = BigDecimal.valueOf(p2.lat());</span>
+
+        // Calculate coordinate differences
+<span class="fc" id="L27">        BigDecimal dx = lng1.subtract(lng2);</span>
+<span class="fc" id="L28">        BigDecimal dy = lat1.subtract(lat2);</span>
+
+        // Square the differences
+<span class="fc" id="L31">        BigDecimal dxSquared = dx.multiply(dx);</span>
+<span class="fc" id="L32">        BigDecimal dySquared = dy.multiply(dy);</span>
+
+        // Sum of squares
+<span class="fc" id="L35">        BigDecimal sumSquares = dxSquared.add(dySquared);</span>
+
+        // Take square root and return as double
+<span class="fc" id="L38">        return Math.sqrt(sumSquares.doubleValue());</span>
+    }
+
+    @Override
+    public boolean isClose(Position p1, Position p2) {
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        return distance(p1, p2) &lt; 0.00015;</span>
+    }
+
+    @Override
+    public Position nextPosition(Position start, double angle) {
+<span class="fc" id="L48">        BigDecimal startLng = BigDecimal.valueOf(start.lng());</span>
+<span class="fc" id="L49">        BigDecimal startLat = BigDecimal.valueOf(start.lat());</span>
+
+        // Convert angle to radians for trigonometric functions
+        // Uses mathematical angle system: 0° = East, 90° = North, 180° = West, 270° = South (counterclockwise)
+<span class="fc" id="L53">        double rad = Math.toRadians(angle);</span>
+
+        // Calculate movement components using trigonometry
+<span class="fc" id="L56">        BigDecimal cos = BigDecimal.valueOf(Math.cos(rad));</span>
+<span class="fc" id="L57">        BigDecimal sin = BigDecimal.valueOf(Math.sin(rad));</span>
+
+        // Calculate deltas (how much to move in each direction)
+<span class="fc" id="L60">        BigDecimal deltaLng = MOVE_STEP.multiply(cos);</span>
+<span class="fc" id="L61">        BigDecimal deltaLat = MOVE_STEP.multiply(sin);</span>
+
+        // Calculate new position
+<span class="fc" id="L64">        BigDecimal newLng = startLng.add(deltaLng);</span>
+<span class="fc" id="L65">        BigDecimal newLat = startLat.add(deltaLat);</span>
+
+<span class="fc" id="L67">        return new Position(newLng.doubleValue(), newLat.doubleValue());</span>
+    }
+
+    @Override
+    public boolean isInRegion(Position point, List&lt;Position&gt; vertices) {
+<span class="fc" id="L72">        BigDecimal pointLng = BigDecimal.valueOf(point.lng());</span>
+<span class="fc" id="L73">        BigDecimal pointLat = BigDecimal.valueOf(point.lat());</span>
+
+        // Phase 1: Border detection
+        // Check if point lies on any edge of the polygon
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (int i = 0; i &lt; vertices.size() - 1; i++) {</span>
+<span class="fc" id="L78">            Position v1 = vertices.get(i);</span>
+<span class="fc" id="L79">            Position v2 = vertices.get(i + 1);</span>
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            if (isPointOnSegment(point, v1, v2)) {</span>
+<span class="fc" id="L82">                return true;</span>
+            }
+        }
+
+        // Phase 2: Interior detection using ray casting algorithm
+        // Cast a horizontal ray from the point to the right (positive x direction)
+        // and count how many polygon edges it crosses
+<span class="fc" id="L89">        boolean inside = false;</span>
+<span class="fc" id="L90">        int j = vertices.size() - 1;</span>
+
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        for (int i = 0; i &lt; vertices.size(); i++) {</span>
+<span class="fc" id="L93">            Position vi = vertices.get(i);</span>
+<span class="fc" id="L94">            Position vj = vertices.get(j);</span>
+
+
+<span class="fc" id="L97">            BigDecimal viLng = BigDecimal.valueOf(vi.lng());</span>
+<span class="fc" id="L98">            BigDecimal viLat = BigDecimal.valueOf(vi.lat());</span>
+<span class="fc" id="L99">            BigDecimal vjLng = BigDecimal.valueOf(vj.lng());</span>
+<span class="fc" id="L100">            BigDecimal vjLat = BigDecimal.valueOf(vj.lat());</span>
+
+
+            // Check if the edge between vj and vi straddles the point's latitude
+            // (one endpoint above, one below - this is when a horizontal ray can cross)
+<span class="fc bfc" id="L105" title="All 6 branches covered.">            boolean latCondition = (viLat.compareTo(pointLat) &gt; 0) != (vjLat.compareTo(pointLat) &gt; 0);</span>
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">            if (latCondition) {</span>
+<span class="fc" id="L108">                BigDecimal lngDiff = vjLng.subtract(viLng);</span>
+<span class="fc" id="L109">                BigDecimal latDiff = vjLat.subtract(viLat);</span>
+<span class="fc" id="L110">                BigDecimal pointLatDiff = pointLat.subtract(viLat);</span>
+
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">                if (latDiff.compareTo(BigDecimal.ZERO) != 0) {</span>
+                    // Calculate x-coordinate where edge intersects the horizontal ray
+                    // Formula: intersectionX = viLng + (lngDiff × pointLatDiff / latDiff)
+<span class="fc" id="L115">                    BigDecimal intersectionX = lngDiff</span>
+<span class="fc" id="L116">                            .multiply(pointLatDiff)</span>
+<span class="fc" id="L117">                            .divide(latDiff, 15, RoundingMode.HALF_UP)</span>
+<span class="fc" id="L118">                            .add(viLng);</span>
+
+<span class="fc bfc" id="L120" title="All 2 branches covered.">                    if (pointLng.compareTo(intersectionX) &lt; 0) {</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">                        inside = !inside;</span>
+                    }
+                }
+            }
+<span class="fc" id="L125">            j = i;</span>
+        }
+<span class="fc" id="L127">        return inside;</span>
+    }
+
+    /**
+     * Checks if a point lies on a line segment between two vertices.
+     *
+     * @param point the point to check
+     * @param v1 first vertex of the segment
+     * @param v2 second vertex of the segment
+     * @return true if point is on the segment, false otherwise
+     */
+    private boolean isPointOnSegment(Position point, Position v1, Position v2) {
+<span class="fc" id="L139">        BigDecimal px = BigDecimal.valueOf(point.lng());</span>
+<span class="fc" id="L140">        BigDecimal py = BigDecimal.valueOf(point.lat());</span>
+<span class="fc" id="L141">        BigDecimal v1x = BigDecimal.valueOf(v1.lng());</span>
+<span class="fc" id="L142">        BigDecimal v1y = BigDecimal.valueOf(v1.lat());</span>
+<span class="fc" id="L143">        BigDecimal v2x = BigDecimal.valueOf(v2.lng());</span>
+<span class="fc" id="L144">        BigDecimal v2y = BigDecimal.valueOf(v2.lat());</span>
+
+        // Step 1: Bounding box check (quick rejection test)
+        // Point must be within the rectangle defined by segment endpoints
+<span class="fc" id="L148">        BigDecimal minX = v1x.min(v2x);</span>
+<span class="fc" id="L149">        BigDecimal maxX = v1x.max(v2x);</span>
+<span class="fc" id="L150">        BigDecimal minY = v1y.min(v2y);</span>
+<span class="fc" id="L151">        BigDecimal maxY = v1y.max(v2y);</span>
+
+<span class="fc bfc" id="L153" title="All 4 branches covered.">        if (px.compareTo(minX) &lt; 0 || px.compareTo(maxX) &gt; 0 ||</span>
+<span class="fc bfc" id="L154" title="All 4 branches covered.">                py.compareTo(minY) &lt; 0 || py.compareTo(maxY) &gt; 0) {</span>
+<span class="fc" id="L155">            return false;</span>
+        }
+
+        // Step 2: Collinearity check using cross product
+        // Calculate vectors
+<span class="fc" id="L160">        BigDecimal dx1 = px.subtract(v1x);</span>
+<span class="fc" id="L161">        BigDecimal dy1 = py.subtract(v1y);</span>
+<span class="fc" id="L162">        BigDecimal dx2 = v2x.subtract(v1x);</span>
+<span class="fc" id="L163">        BigDecimal dy2 = v2y.subtract(v1y);</span>
+
+        // Cross product: if zero, vectors are parallel (point is on the line)
+        // crossProduct = dx1 × dy2 - dy1 × dx2
+<span class="fc" id="L167">        BigDecimal crossProduct = dx1.multiply(dy2).subtract(dy1.multiply(dx2));</span>
+
+        // Check if cross product is essentially zero (within tolerance)
+<span class="fc" id="L170">        BigDecimal tolerance = new BigDecimal(&quot;1E-9&quot;);</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        return crossProduct.abs().compareTo(tolerance) &lt; 0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

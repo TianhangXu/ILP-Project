@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DroneServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ilp_submission_image</a> &gt; <a href="index.source.html" class="el_package">ilp_submission_3.ilp_submission_image.Service</a> &gt; <span class="el_source">DroneServiceImpl.java</span></div><h1>DroneServiceImpl.java</h1><pre class="source lang-java linenums">package ilp_submission_3.ilp_submission_image.Service;
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ilp_submission_3.ilp_submission_image.Configuration.ILPEndpointProvider;
+import ilp_submission_3.ilp_submission_image.dto.*;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+@Service
+public class DroneServiceImpl implements DroneService {
+    private final RestTemplate restTemplate;
+
+    private final ILPServiceInterface ilpService;
+
+    private final ILPEndpointProvider endpointProvider;
+<span class="fc" id="L27">    public DroneServiceImpl(RestTemplate restTemplate, ILPServiceInterface ilpService, ILPEndpointProvider endpointProvider) {</span>
+<span class="fc" id="L28">        this.restTemplate = restTemplate;</span>
+<span class="fc" id="L29">        this.ilpService = ilpService;</span>
+<span class="fc" id="L30">        this.endpointProvider = endpointProvider;</span>
+<span class="fc" id="L31">    }</span>
+
+    private static final double MOVE_DISTANCE = 0.00015;
+
+
+    @Override
+    public List&lt;Drone&gt; getAllDrones() {
+<span class="fc" id="L38">        String url = endpointProvider.getEndpoint() + &quot;/drones&quot;;</span>
+<span class="fc" id="L39">        Drone[] drones = restTemplate.getForObject(url, Drone[].class);</span>
+
+<span class="fc" id="L41">        List&lt;Drone&gt; droneList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (drones != null) {</span>
+<span class="fc" id="L43">            droneList.addAll(Arrays.asList(drones));</span>
+        }
+<span class="fc" id="L45">        return droneList;</span>
+    }
+
+    @Override
+    public List&lt;DroneForServicePoint&gt; getAllServicePoints() {
+
+<span class="fc" id="L51">        String url = endpointProvider.getEndpoint() + &quot;/drones-for-service-points&quot;;</span>
+<span class="fc" id="L52">        DroneForServicePoint[] droneForServicePoints = restTemplate.getForObject(url, DroneForServicePoint[].class);</span>
+
+<span class="fc" id="L54">        List&lt;DroneForServicePoint&gt; droneForServicePointList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (droneForServicePoints != null) {</span>
+<span class="fc" id="L56">            droneForServicePointList.addAll(Arrays.asList(droneForServicePoints));</span>
+        }
+<span class="fc" id="L58">        return droneForServicePointList;</span>
+    }
+
+    @Override
+    public List&lt;DroneServicePoint&gt; getServicePointLocations() {
+
+<span class="fc" id="L64">        String url = endpointProvider.getEndpoint() + &quot;/service-points&quot;;</span>
+<span class="fc" id="L65">        DroneServicePoint[] points = restTemplate.getForObject(url, DroneServicePoint[].class);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (points != null) {</span>
+<span class="fc" id="L67">            return Arrays.asList(points);</span>
+        } else {
+<span class="fc" id="L69">            return new ArrayList&lt;&gt;();</span>
+        }
+    }
+
+
+    @Override
+    public List&lt;String&gt; getDronesWithCooling(boolean hasCooling) {
+<span class="fc" id="L76">        List&lt;Drone&gt; allDrones = getAllDrones();</span>
+<span class="fc" id="L77">        List&lt;String&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        for (Drone drone : allDrones) {</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">            if (drone.capability() != null) {</span>
+<span class="fc" id="L81">                Boolean cooling = drone.capability().cooling();</span>
+<span class="fc bfc" id="L82" title="All 4 branches covered.">                boolean actualCooling = (cooling != null &amp;&amp; cooling);</span>
+
+<span class="fc bfc" id="L84" title="All 2 branches covered.">                if (actualCooling == hasCooling) {</span>
+<span class="fc" id="L85">                    result.add(drone.id());</span>
+                }
+            }
+<span class="fc" id="L88">        }</span>
+<span class="fc" id="L89">        return result;</span>
+    }
+    @Override
+    public Drone getDroneById(String id) {
+<span class="fc" id="L93">        List&lt;Drone&gt; allDrones = getAllDrones();</span>
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        for (Drone drone : allDrones) {</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">            if (drone.id().equals(id)) {</span>
+<span class="fc" id="L97">                return drone;</span>
+            }
+<span class="fc" id="L99">        }</span>
+<span class="fc" id="L100">        return null;</span>
+    }
+
+    @Override
+    public List&lt;String&gt; queryDronesByPath(String attributeName, String attributeValue) {
+<span class="fc" id="L105">        List&lt;Drone&gt; allDrones = getAllDrones();</span>
+<span class="fc" id="L106">        List&lt;String&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        for (Drone drone : allDrones) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            if (matchesAttribute(drone, attributeName, &quot;=&quot;, attributeValue)) {</span>
+<span class="fc" id="L110">                result.add(drone.id());</span>
+            }
+<span class="fc" id="L112">        }</span>
+
+<span class="fc" id="L114">        return result;</span>
+    }
+
+    @Override
+    public List&lt;String&gt; queryDrones(List&lt;QueryAttribute&gt; queryAttributes) {
+<span class="fc" id="L119">        List&lt;Drone&gt; allDrones = getAllDrones();</span>
+<span class="fc" id="L120">        List&lt;String&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        for (Drone drone : allDrones) {</span>
+<span class="fc" id="L123">            boolean matchesAll = true;</span>
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">            for (QueryAttribute query : queryAttributes) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                if (!matchesAttribute(drone, query.attribute(), query.operator(), query.value())) {</span>
+<span class="fc" id="L127">                    matchesAll = false;</span>
+<span class="fc" id="L128">                    break;</span>
+                }
+<span class="fc" id="L130">            }</span>
+
+<span class="fc bfc" id="L132" title="All 2 branches covered.">            if (matchesAll) {</span>
+<span class="fc" id="L133">                result.add(drone.id());</span>
+            }
+<span class="fc" id="L135">        }</span>
+<span class="fc" id="L136">        return result;</span>
+    }
+
+
+    private boolean matchesAttribute(Drone drone, String attributeName, String operator, String value) {
+        try {
+
+<span class="pc bpc" id="L143" title="1 of 3 branches missed.">            switch (attributeName) {</span>
+                case &quot;id&quot;:
+<span class="nc" id="L145">                    return compareValues(drone.id(), operator, value, true);</span>
+                case &quot;name&quot;:
+<span class="fc" id="L147">                    return compareValues(drone.name(), operator, value, false);</span>
+
+            }
+
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            if (drone.capability() != null) {</span>
+<span class="fc bfc" id="L152" title="All 8 branches covered.">                switch (attributeName) {</span>
+                    case &quot;capacity&quot;:
+<span class="fc" id="L154">                        return compareValues(drone.capability().capacity(), operator, value, true);</span>
+                    case &quot;cooling&quot;:
+<span class="fc" id="L156">                        return compareValues(drone.capability().cooling(), operator, value, false);</span>
+                    case &quot;heating&quot;:
+<span class="fc" id="L158">                        return compareValues(drone.capability().heating(), operator, value, false);</span>
+                    case &quot;maxMoves&quot;:
+<span class="fc" id="L160">                        return compareValues(drone.capability().maxMoves(), operator, value, true);</span>
+                    case &quot;costPerMove&quot;:
+<span class="fc" id="L162">                        return compareValues(drone.capability().costPerMove(), operator, value, true);</span>
+                    case &quot;costInitial&quot;:
+<span class="fc" id="L164">                        return compareValues(drone.capability().costInitial(), operator, value, true);</span>
+                    case &quot;costFinal&quot;:
+<span class="fc" id="L166">                        return compareValues(drone.capability().costFinal(), operator, value, true);</span>
+                }
+            }
+
+<span class="fc" id="L170">            return false;</span>
+<span class="nc" id="L171">        } catch (Exception e) {</span>
+<span class="nc" id="L172">            return false;</span>
+        }
+    }
+
+    private boolean compareValues(Object droneValue, String operator, String queryValue, boolean isNumeric) {
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        if (droneValue == null) {</span>
+<span class="fc" id="L178">            return false;</span>
+        }
+
+<span class="fc bfc" id="L181" title="All 2 branches covered.">        if (isNumeric) {</span>
+            double droneNum;
+            double queryNum;
+
+            try {
+<span class="fc bfc" id="L186" title="All 2 branches covered.">                if (droneValue instanceof Integer) {</span>
+<span class="fc" id="L187">                    droneNum = ((Integer) droneValue).doubleValue();</span>
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">                } else if (droneValue instanceof Double) {</span>
+<span class="fc" id="L189">                    droneNum = (Double) droneValue;</span>
+                } else {
+<span class="nc" id="L191">                    droneNum = Double.parseDouble(droneValue.toString());</span>
+                }
+
+<span class="fc" id="L194">                queryNum = Double.parseDouble(queryValue);</span>
+<span class="fc" id="L195">            } catch (NumberFormatException e) {</span>
+<span class="fc" id="L196">                return false;</span>
+<span class="fc" id="L197">            }</span>
+
+<span class="fc bfc" id="L199" title="All 7 branches covered.">            switch (operator) {</span>
+                case &quot;=&quot;:
+<span class="fc bfc" id="L201" title="All 2 branches covered.">                    return Math.abs(droneNum - queryNum) &lt; 0.0001;</span>
+                case &quot;!=&quot;:
+<span class="fc bfc" id="L203" title="All 2 branches covered.">                    return Math.abs(droneNum - queryNum) &gt;= 0.0001;</span>
+                case &quot;&lt;&quot;:
+<span class="fc bfc" id="L205" title="All 2 branches covered.">                    return droneNum &lt; queryNum;</span>
+                case &quot;&gt;&quot;:
+<span class="fc bfc" id="L207" title="All 2 branches covered.">                    return droneNum &gt; queryNum;</span>
+                case &quot;&lt;=&quot;:
+<span class="fc bfc" id="L209" title="All 2 branches covered.">                    return droneNum &lt;= queryNum;</span>
+                case &quot;&gt;=&quot;:
+<span class="fc bfc" id="L211" title="All 2 branches covered.">                    return droneNum &gt;= queryNum;</span>
+                default:
+<span class="fc" id="L213">                    return false;</span>
+            }
+        } else {
+
+<span class="fc" id="L217">            String droneStr = droneValue.toString().toLowerCase();</span>
+<span class="fc" id="L218">            String queryStr = queryValue.toLowerCase();</span>
+
+<span class="pc bpc" id="L220" title="1 of 3 branches missed.">            switch (operator) {</span>
+                case &quot;=&quot;:
+<span class="fc" id="L222">                    return droneStr.equals(queryStr);</span>
+                case &quot;!=&quot;:
+<span class="fc bfc" id="L224" title="All 2 branches covered.">                    return !droneStr.equals(queryStr);</span>
+                default:
+<span class="nc" id="L226">                    return false;</span>
+            }
+        }
+    }
+
+    @Override
+    public List&lt;String&gt; queryAvailableDrones(List&lt;MedDispatchRec&gt; dispatchRecords) {
+<span class="fc bfc" id="L233" title="All 4 branches covered.">        if (dispatchRecords == null || dispatchRecords.isEmpty()) {</span>
+<span class="fc" id="L234">            return new ArrayList&lt;&gt;();</span>
+        }
+
+        // 检查冷热需求冲突
+<span class="fc bfc" id="L238" title="All 2 branches covered.">        for (MedDispatchRec record : dispatchRecords) {</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">            if (record.requirements() != null) {</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">                boolean requiresCooling = record.requirements().cooling() != null &amp;&amp;</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">                        record.requirements().cooling();</span>
+<span class="pc bpc" id="L242" title="1 of 2 branches missed.">                boolean requiresHeating = record.requirements().heating() != null &amp;&amp;</span>
+<span class="fc bfc" id="L243" title="All 2 branches covered.">                        record.requirements().heating();</span>
+<span class="fc bfc" id="L244" title="All 4 branches covered.">                if (requiresCooling &amp;&amp; requiresHeating) {</span>
+<span class="fc" id="L245">                    return new ArrayList&lt;&gt;();</span>
+                }
+            }
+<span class="fc" id="L248">        }</span>
+
+        // 按日期分组
+<span class="fc" id="L251">        Map&lt;String, List&lt;MedDispatchRec&gt;&gt; dispatchesByDate = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        for (MedDispatchRec record : dispatchRecords) {</span>
+<span class="fc" id="L253">            String date = record.date();</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">            if (!dispatchesByDate.containsKey(date)) {</span>
+<span class="fc" id="L255">                dispatchesByDate.put(date, new ArrayList&lt;&gt;());</span>
+            }
+<span class="fc" id="L257">            dispatchesByDate.get(date).add(record);</span>
+<span class="fc" id="L258">        }</span>
+
+<span class="fc" id="L260">        List&lt;Drone&gt; allDrones = getAllDrones();</span>
+<span class="fc" id="L261">        List&lt;DroneForServicePoint&gt; droneForServicePoints = getAllServicePoints();</span>
+<span class="fc" id="L262">        List&lt;String&gt; result = new ArrayList&lt;&gt;();</span>
+
+        // 对每个无人机检查
+<span class="fc bfc" id="L265" title="All 2 branches covered.">        for (Drone drone : allDrones) {</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">            if (canDroneHandleAllDateGroups(drone, dispatchesByDate, droneForServicePoints)) {</span>
+<span class="fc" id="L267">                result.add(drone.id());</span>
+            }
+<span class="fc" id="L269">        }</span>
+
+<span class="fc" id="L271">        return result;</span>
+    }
+
+    private boolean canDroneHandleAllDateGroups(Drone drone,
+                                                Map&lt;String, List&lt;MedDispatchRec&gt;&gt; dispatchesByDate,
+                                                List&lt;DroneForServicePoint&gt; droneForServicePoints) {
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">        if (drone.capability() == null) {</span>
+<span class="nc" id="L278">            return false;</span>
+        }
+
+<span class="fc" id="L281">        DroneForServicePoint.DroneAvailability droneAvailability =</span>
+<span class="fc" id="L282">                findDroneAvailability(drone.id(), droneForServicePoints);</span>
+
+        // 遍历每个日期的配送组
+<span class="fc bfc" id="L285" title="All 2 branches covered.">        for (Map.Entry&lt;String, List&lt;MedDispatchRec&gt;&gt; entry : dispatchesByDate.entrySet()) {</span>
+<span class="fc" id="L286">            List&lt;MedDispatchRec&gt; dailyDispatches = entry.getValue();</span>
+
+<span class="fc bfc" id="L288" title="All 2 branches covered.">            if (!canDroneHandleDailyDispatches(drone, dailyDispatches, droneAvailability)) {</span>
+<span class="fc" id="L289">                return false;</span>
+            }
+<span class="fc" id="L291">        }</span>
+
+<span class="fc" id="L293">        return true;</span>
+    }
+
+    private boolean canDroneHandleDailyDispatches(Drone drone,
+                                                  List&lt;MedDispatchRec&gt; dailyDispatches,
+                                                  DroneForServicePoint.DroneAvailability droneAvailability) {
+
+<span class="fc bfc" id="L300" title="All 2 branches covered.">        for (MedDispatchRec record : dailyDispatches) {</span>
+<span class="fc bfc" id="L301" title="All 2 branches covered.">            if (!canDroneHandleDispatch(drone, record, droneAvailability)) {</span>
+<span class="fc" id="L302">                return false;</span>
+            }
+
+<span class="pc bpc" id="L305" title="2 of 4 branches missed.">            if (record.requirements() != null &amp;&amp; record.requirements().capacity() != null) {</span>
+<span class="fc bfc" id="L306" title="All 2 branches covered.">                if (record.requirements().capacity() &gt; drone.capability().capacity()) {</span>
+<span class="fc" id="L307">                    return false;</span>
+                }
+            }
+<span class="fc" id="L310">        }</span>
+
+<span class="fc" id="L312">        return true;</span>
+    }
+
+    @Override
+    public List&lt;String&gt; queryAvailableDronesWithOr(List&lt;MedDispatchRec&gt; dispatchRecords) {
+<span class="pc bpc" id="L317" title="1 of 4 branches missed.">        if (dispatchRecords == null || dispatchRecords.isEmpty()) {</span>
+<span class="fc" id="L318">            return new ArrayList&lt;&gt;();</span>
+        }
+
+<span class="fc bfc" id="L321" title="All 2 branches covered.">        for (MedDispatchRec record : dispatchRecords) {</span>
+<span class="fc bfc" id="L322" title="All 2 branches covered.">            if (record.requirements() != null) {</span>
+<span class="pc bpc" id="L323" title="1 of 2 branches missed.">                boolean requiresCooling = record.requirements().cooling() != null &amp;&amp;</span>
+<span class="fc bfc" id="L324" title="All 2 branches covered.">                        record.requirements().cooling();</span>
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">                boolean requiresHeating = record.requirements().heating() != null &amp;&amp;</span>
+<span class="fc bfc" id="L326" title="All 2 branches covered.">                        record.requirements().heating();</span>
+
+<span class="fc bfc" id="L328" title="All 4 branches covered.">                if (requiresCooling &amp;&amp; requiresHeating) {</span>
+<span class="fc" id="L329">                    return new ArrayList&lt;&gt;();</span>
+                }
+            }
+<span class="fc" id="L332">        }</span>
+
+<span class="fc" id="L334">        List&lt;Drone&gt; allDrones = getAllDrones();</span>
+<span class="fc" id="L335">        List&lt;DroneForServicePoint&gt; droneForServicePoints = getAllServicePoints();</span>
+<span class="fc" id="L336">        List&lt;String&gt; result = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L338" title="All 2 branches covered.">        for (Drone drone : allDrones) {</span>
+<span class="fc bfc" id="L339" title="All 2 branches covered.">            if (canDroneHandleAnyDispatch(drone, dispatchRecords, droneForServicePoints)) {</span>
+<span class="fc" id="L340">                result.add(drone.id());</span>
+            }
+<span class="fc" id="L342">        }</span>
+
+<span class="fc" id="L344">        return result;</span>
+    }
+
+    private boolean canDroneHandleAnyDispatch(Drone drone, List&lt;MedDispatchRec&gt; dispatchRecords,
+                                              List&lt;DroneForServicePoint&gt; droneForServicePoints) {
+<span class="pc bpc" id="L349" title="1 of 2 branches missed.">        if (drone.capability() == null) {</span>
+<span class="nc" id="L350">            return false;</span>
+        }
+
+<span class="fc" id="L353">        DroneForServicePoint.DroneAvailability droneAvailability =</span>
+<span class="fc" id="L354">                findDroneAvailability(drone.id(), droneForServicePoints);</span>
+
+<span class="fc bfc" id="L356" title="All 2 branches covered.">        for (MedDispatchRec record : dispatchRecords) {</span>
+<span class="fc bfc" id="L357" title="All 2 branches covered.">            if (canDroneHandleDispatchAny(drone, record, droneAvailability)) {</span>
+<span class="fc" id="L358">                return true;</span>
+            }
+<span class="fc" id="L360">        }</span>
+
+<span class="fc" id="L362">        return false;</span>
+    }
+
+    private DroneForServicePoint.DroneAvailability findDroneAvailability(String droneId, List&lt;DroneForServicePoint&gt; droneForServicePoints) {
+<span class="fc bfc" id="L366" title="All 2 branches covered.">        for (DroneForServicePoint sp : droneForServicePoints) {</span>
+<span class="fc bfc" id="L367" title="All 2 branches covered.">            if (sp.drones() != null) {</span>
+<span class="fc bfc" id="L368" title="All 2 branches covered.">                for (DroneForServicePoint.DroneAvailability da : sp.drones()) {</span>
+<span class="fc bfc" id="L369" title="All 2 branches covered.">                    if (da.id().equals(droneId)) {</span>
+<span class="fc" id="L370">                        return da;</span>
+                    }
+<span class="fc" id="L372">                }</span>
+            }
+<span class="fc" id="L374">        }</span>
+<span class="fc" id="L375">        return null;</span>
+    }
+    private boolean canDroneHandleDispatch(Drone drone, MedDispatchRec record,
+                                           DroneForServicePoint.DroneAvailability droneAvailability) {
+<span class="pc bpc" id="L379" title="2 of 4 branches missed.">        if (drone.capability() == null || record.requirements() == null) {</span>
+<span class="nc" id="L380">            return false;</span>
+        }
+
+<span class="fc" id="L383">        MedDispatchRec.Requirements req = record.requirements();</span>
+
+
+        // Check cooling
+<span class="pc bpc" id="L387" title="1 of 4 branches missed.">        boolean requiresCooling = req.cooling() != null &amp;&amp; req.cooling();</span>
+<span class="pc bpc" id="L388" title="1 of 4 branches missed.">        boolean hasCooling = drone.capability().cooling() != null &amp;&amp; drone.capability().cooling();</span>
+<span class="fc bfc" id="L389" title="All 4 branches covered.">        if (requiresCooling &amp;&amp; !hasCooling) {</span>
+<span class="fc" id="L390">            return false;</span>
+        }
+
+        // Check heating
+<span class="pc bpc" id="L394" title="1 of 4 branches missed.">        boolean requiresHeating = req.heating() != null &amp;&amp; req.heating();</span>
+<span class="pc bpc" id="L395" title="1 of 4 branches missed.">        boolean hasHeating = drone.capability().heating() != null &amp;&amp; drone.capability().heating();</span>
+<span class="fc bfc" id="L396" title="All 4 branches covered.">        if (requiresHeating &amp;&amp; !hasHeating) {</span>
+<span class="fc" id="L397">            return false;</span>
+        }
+
+        // Cooling and heating are mutually exclusive
+<span class="pc bpc" id="L401" title="1 of 4 branches missed.">        if (requiresCooling &amp;&amp; requiresHeating) {</span>
+<span class="nc" id="L402">            return false;</span>
+        }
+
+        // Check availability (date and time)
+<span class="pc bpc" id="L406" title="2 of 4 branches missed.">        if (record.date() != null &amp;&amp; record.time() != null) {</span>
+<span class="fc bfc" id="L407" title="All 2 branches covered.">            if (!isDroneAvailable(droneAvailability, record.date(), record.time())) {</span>
+<span class="fc" id="L408">                return false;</span>
+            }
+        }
+
+        // Check maxCost if present
+<span class="pc bpc" id="L413" title="1 of 2 branches missed.">        if (req.maxCost() != null) {</span>
+<span class="fc bfc" id="L414" title="All 2 branches covered.">            if (!canAffordDelivery(drone, record, droneAvailability)) {</span>
+<span class="fc" id="L415">                return false;</span>
+            }
+        }
+
+<span class="fc" id="L419">        return true;</span>
+    }
+
+
+    private boolean canAffordDelivery(Drone drone, MedDispatchRec record,
+                                      DroneForServicePoint.DroneAvailability droneAvailability) {
+<span class="pc bpc" id="L425" title="2 of 4 branches missed.">        if (drone.capability() == null || record.requirements() == null ||</span>
+<span class="pc bpc" id="L426" title="1 of 4 branches missed.">                record.requirements().maxCost() == null || record.delivery() == null) {</span>
+<span class="fc" id="L427">            return true;</span>
+        }
+
+<span class="fc" id="L430">        Position servicePointLocation = findServicePointLocation(droneAvailability);</span>
+<span class="pc bpc" id="L431" title="1 of 2 branches missed.">        if (servicePointLocation == null) {</span>
+<span class="nc" id="L432">            return false;</span>
+        }
+
+<span class="fc" id="L435">        Position deliveryLocation = record.delivery();</span>
+<span class="fc" id="L436">        double distance = ilpService.distance(servicePointLocation, deliveryLocation);</span>
+
+<span class="fc" id="L438">        int moves = (int) Math.ceil(distance / MOVE_DISTANCE);</span>
+<span class="fc" id="L439">        int roundTripMoves = moves * 2;</span>
+
+<span class="fc" id="L441">        double costPerMove = 0.0;</span>
+<span class="pc bpc" id="L442" title="1 of 2 branches missed.">        if (drone.capability().costPerMove() != null) {</span>
+<span class="fc" id="L443">            costPerMove = drone.capability().costPerMove();</span>
+        }
+
+<span class="fc" id="L446">        double costInitial = 0.0;</span>
+<span class="pc bpc" id="L447" title="1 of 2 branches missed.">        if (drone.capability().costInitial() != null) {</span>
+<span class="fc" id="L448">            costInitial = drone.capability().costInitial();</span>
+        }
+
+<span class="fc" id="L451">        double costFinal = 0.0;</span>
+<span class="pc bpc" id="L452" title="1 of 2 branches missed.">        if (drone.capability().costFinal() != null) {</span>
+<span class="fc" id="L453">            costFinal = drone.capability().costFinal();</span>
+        }
+
+<span class="fc" id="L456">        double totalCost = costInitial + costFinal + (roundTripMoves * costPerMove);</span>
+
+<span class="fc bfc" id="L458" title="All 2 branches covered.">        return totalCost &lt;= record.requirements().maxCost();</span>
+    }
+
+    private Position findServicePointLocation(DroneForServicePoint.DroneAvailability droneAvailability) {
+<span class="pc bpc" id="L462" title="1 of 2 branches missed.">        if (droneAvailability == null) {</span>
+<span class="nc" id="L463">            return null;</span>
+        }
+
+<span class="fc" id="L466">        List&lt;DroneForServicePoint&gt; servicePoints = getAllServicePoints();</span>
+
+<span class="pc bpc" id="L468" title="1 of 2 branches missed.">        for (DroneForServicePoint sp : servicePoints) {</span>
+<span class="pc bpc" id="L469" title="1 of 2 branches missed.">            if (sp.drones() != null) {</span>
+<span class="fc bfc" id="L470" title="All 2 branches covered.">                for (DroneForServicePoint.DroneAvailability da : sp.drones()) {</span>
+<span class="fc bfc" id="L471" title="All 2 branches covered.">                    if (da.id().equals(droneAvailability.id())) {</span>
+<span class="fc" id="L472">                        return getServicePointLocationById(sp.servicePointId());</span>
+                    }
+<span class="fc" id="L474">                }</span>
+            }
+<span class="fc" id="L476">        }</span>
+
+<span class="nc" id="L478">        return null;</span>
+    }
+
+
+    private Position getServicePointLocationById(Integer servicePointId) {
+<span class="fc" id="L483">        List&lt;DroneServicePoint&gt; allServicePoints = getServicePointLocations();</span>
+
+<span class="pc bpc" id="L485" title="1 of 2 branches missed.">        for (DroneServicePoint sp : allServicePoints) {</span>
+<span class="fc bfc" id="L486" title="All 2 branches covered.">            if (sp.id().equals(servicePointId)) {</span>
+<span class="pc bpc" id="L487" title="1 of 2 branches missed.">                if (sp.location() != null) {</span>
+<span class="fc" id="L488">                    return new Position(</span>
+<span class="fc" id="L489">                            sp.location().lng(),</span>
+<span class="fc" id="L490">                            sp.location().lat()</span>
+                    );
+                }
+            }
+<span class="fc" id="L494">        }</span>
+
+<span class="nc" id="L496">        return null;</span>
+    }
+
+
+    private boolean canDroneHandleDispatchAny(Drone drone, MedDispatchRec record,
+                                              DroneForServicePoint.DroneAvailability droneAvailability) {
+<span class="pc bpc" id="L502" title="1 of 4 branches missed.">        if (drone.capability() == null || record.requirements() == null) {</span>
+<span class="fc" id="L503">            return false;</span>
+        }
+
+<span class="fc" id="L506">        MedDispatchRec.Requirements req = record.requirements();</span>
+
+<span class="fc bfc" id="L508" title="All 2 branches covered.">        if (req.capacity() != null) {</span>
+<span class="pc bpc" id="L509" title="1 of 2 branches missed.">            if (drone.capability().capacity() == null ||</span>
+<span class="fc bfc" id="L510" title="All 2 branches covered.">                    drone.capability().capacity() &lt; req.capacity()) {</span>
+<span class="fc" id="L511">                return false;</span>
+            }
+        }
+
+<span class="pc bpc" id="L515" title="1 of 4 branches missed.">        boolean requiresCooling = req.cooling() != null &amp;&amp; req.cooling();</span>
+<span class="pc bpc" id="L516" title="1 of 4 branches missed.">        boolean hasCooling = drone.capability().cooling() != null &amp;&amp; drone.capability().cooling();</span>
+<span class="fc bfc" id="L517" title="All 4 branches covered.">        if (requiresCooling &amp;&amp; !hasCooling) {</span>
+<span class="fc" id="L518">            return false;</span>
+        }
+
+<span class="pc bpc" id="L521" title="1 of 4 branches missed.">        boolean requiresHeating = req.heating() != null &amp;&amp; req.heating();</span>
+<span class="pc bpc" id="L522" title="1 of 4 branches missed.">        boolean hasHeating = drone.capability().heating() != null &amp;&amp; drone.capability().heating();</span>
+<span class="pc bpc" id="L523" title="1 of 4 branches missed.">        if (requiresHeating &amp;&amp; !hasHeating) {</span>
+<span class="nc" id="L524">            return false;</span>
+        }
+
+<span class="pc bpc" id="L527" title="1 of 4 branches missed.">        if (requiresCooling &amp;&amp; requiresHeating) {</span>
+<span class="nc" id="L528">            return false;</span>
+        }
+
+<span class="pc bpc" id="L531" title="2 of 4 branches missed.">        if (record.date() != null &amp;&amp; record.time() != null) {</span>
+<span class="fc bfc" id="L532" title="All 2 branches covered.">            if (!isDroneAvailable(droneAvailability, record.date(), record.time())) {</span>
+<span class="fc" id="L533">                return false;</span>
+            }
+        }
+<span class="fc" id="L536">        return true;</span>
+    }
+
+    private boolean isDroneAvailable(DroneForServicePoint.DroneAvailability droneAvailability, String dateStr, String timeStr) {
+        try {
+<span class="fc" id="L541">            LocalDate date = LocalDate.parse(dateStr);</span>
+<span class="fc" id="L542">            LocalTime time = LocalTime.parse(timeStr);</span>
+<span class="fc" id="L543">            DayOfWeek dayOfWeek = date.getDayOfWeek();</span>
+
+<span class="pc bpc" id="L545" title="1 of 4 branches missed.">            if (droneAvailability == null || droneAvailability.availability() == null</span>
+<span class="fc bfc" id="L546" title="All 2 branches covered.">                    || droneAvailability.availability().isEmpty()) {</span>
+<span class="fc" id="L547">                return false;</span>
+            }
+
+<span class="fc bfc" id="L550" title="All 2 branches covered.">            for (DroneForServicePoint.DroneAvailability.Availability slot : droneAvailability.availability()) {</span>
+<span class="fc bfc" id="L551" title="All 2 branches covered.">                if (slot.dayOfWeek() == null) {</span>
+<span class="fc" id="L552">                    continue;</span>
+                }
+
+                DayOfWeek slotDay;
+                try {
+<span class="fc" id="L557">                    slotDay = DayOfWeek.valueOf(slot.dayOfWeek().toUpperCase());</span>
+<span class="fc" id="L558">                } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L559">                    continue;</span>
+<span class="fc" id="L560">                }</span>
+
+<span class="fc bfc" id="L562" title="All 2 branches covered.">                if (slotDay.equals(dayOfWeek)) {</span>
+<span class="pc bpc" id="L563" title="1 of 4 branches missed.">                    if (slot.from() == null || slot.until() == null) {</span>
+<span class="nc" id="L564">                        continue;</span>
+                    }
+
+<span class="fc" id="L567">                    LocalTime fromTime = LocalTime.parse(slot.from());</span>
+<span class="fc" id="L568">                    LocalTime untilTime = LocalTime.parse(slot.until());</span>
+
+<span class="fc bfc" id="L570" title="All 4 branches covered.">                    if (!time.isBefore(fromTime) &amp;&amp; !time.isAfter(untilTime)) {</span>
+<span class="fc" id="L571">                        return true;</span>
+                    }
+                }
+<span class="fc" id="L574">            }</span>
+
+<span class="fc" id="L576">            return false;</span>
+<span class="fc" id="L577">        } catch (Exception e) {</span>
+<span class="fc" id="L578">            return false;</span>
+        }
+    }
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

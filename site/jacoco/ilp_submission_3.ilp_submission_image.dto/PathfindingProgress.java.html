@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PathfindingProgress.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ilp_submission_image</a> &gt; <a href="index.source.html" class="el_package">ilp_submission_3.ilp_submission_image.dto</a> &gt; <span class="el_source">PathfindingProgress.java</span></div><h1>PathfindingProgress.java</h1><pre class="source lang-java linenums">package ilp_submission_3.ilp_submission_image.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Data Transfer Object for pathfinding algorithm progress updates.
+ * Sent via WebSocket to visualize algorithm execution in real-time.
+ */
+<span class="fc" id="L9">public record PathfindingProgress(</span>
+        /**
+         * Type of progress event:
+         * - &quot;node_explored&quot;: A* algorithm explored a new node
+         * - &quot;path_found&quot;: Complete path found for a delivery
+         * - &quot;batch_started&quot;: Started processing a new batch of deliveries
+         * - &quot;batch_completed&quot;: Finished processing a batch
+         * - &quot;delivery_started&quot;: Started calculating path for a specific delivery
+         * - &quot;delivery_completed&quot;: Finished calculating path for a delivery
+         * - &quot;error&quot;: An error occurred during pathfinding
+         */
+        @JsonProperty(&quot;type&quot;) String type,
+
+        /**
+         * Current position being processed (for node_explored events)
+         */
+        @JsonProperty(&quot;position&quot;) Position position,
+
+        /**
+         * ID of the delivery being processed (if applicable)
+         */
+        @JsonProperty(&quot;deliveryId&quot;) Integer deliveryId,
+
+        /**
+         * Total number of nodes explored so far
+         */
+        @JsonProperty(&quot;totalNodes&quot;) Integer totalNodes,
+
+        /**
+         * Current batch number (1-indexed)
+         */
+        @JsonProperty(&quot;currentBatch&quot;) Integer currentBatch,
+
+        /**
+         * ID of the drone being used (if applicable)
+         */
+        @JsonProperty(&quot;droneId&quot;) String droneId,
+
+        /**
+         * Human-readable message describing the progress
+         */
+        @JsonProperty(&quot;message&quot;) String message
+) {
+    /**
+     * Factory method for creating a node exploration event
+     */
+    public static PathfindingProgress nodeExplored(Position position, int totalNodes) {
+<span class="fc" id="L56">        return new PathfindingProgress(</span>
+                &quot;node_explored&quot;,
+                position,
+                null,
+<span class="fc" id="L60">                totalNodes,</span>
+                null,
+                null,
+<span class="fc" id="L63">                &quot;Exploring node at (&quot; + position.lng() + &quot;, &quot; + position.lat() + &quot;)&quot;</span>
+        );
+    }
+
+    /**
+     * Factory method for creating a path found event
+     */
+    public static PathfindingProgress pathFound(Integer deliveryId, int totalNodes, int pathLength) {
+<span class="fc" id="L71">        return new PathfindingProgress(</span>
+                &quot;path_found&quot;,
+                null,
+                deliveryId,
+<span class="fc" id="L75">                totalNodes,</span>
+                null,
+                null,
+                &quot;Path found for delivery &quot; + deliveryId + &quot; with &quot; + pathLength + &quot; moves&quot;
+        );
+    }
+
+    /**
+     * Factory method for creating a batch started event
+     */
+    public static PathfindingProgress batchStarted(int batchNumber, String droneId, int deliveryCount) {
+<span class="fc" id="L86">        return new PathfindingProgress(</span>
+                &quot;batch_started&quot;,
+                null,
+                null,
+                null,
+<span class="fc" id="L91">                batchNumber,</span>
+                droneId,
+                &quot;Starting batch &quot; + batchNumber + &quot; with drone &quot; + droneId +
+                        &quot; (&quot; + deliveryCount + &quot; deliveries)&quot;
+        );
+    }
+
+    /**
+     * Factory method for creating a batch completed event
+     */
+    public static PathfindingProgress batchCompleted(int batchNumber, String droneId,
+                                                     double cost, int moves) {
+<span class="fc" id="L103">        return new PathfindingProgress(</span>
+                &quot;batch_completed&quot;,
+                null,
+                null,
+                null,
+<span class="fc" id="L108">                batchNumber,</span>
+                droneId,
+                &quot;Completed batch &quot; + batchNumber + &quot; - Cost: &quot; +
+<span class="fc" id="L111">                        String.format(&quot;%.2f&quot;, cost) + &quot;, Moves: &quot; + moves</span>
+        );
+    }
+
+    /**
+     * Factory method for creating a delivery started event
+     */
+    public static PathfindingProgress deliveryStarted(Integer deliveryId, Position from, Position to) {
+<span class="fc" id="L119">        return new PathfindingProgress(</span>
+                &quot;delivery_started&quot;,
+                from,
+                deliveryId,
+                null,
+                null,
+                null,
+                &quot;Calculating path for delivery &quot; + deliveryId
+        );
+    }
+
+    /**
+     * Factory method for creating an error event
+     */
+    public static PathfindingProgress error(String errorMessage) {
+<span class="fc" id="L134">        return new PathfindingProgress(</span>
+                &quot;error&quot;,
+                null,
+                null,
+                null,
+                null,
+                null,
+                &quot;Error: &quot; + errorMessage
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

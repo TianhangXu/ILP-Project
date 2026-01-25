@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ILPController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ilp_submission_image</a> &gt; <a href="index.source.html" class="el_package">ilp_submission_3.ilp_submission_image.Controller</a> &gt; <span class="el_source">ILPController.java</span></div><h1>ILPController.java</h1><pre class="source lang-java linenums">package ilp_submission_3.ilp_submission_image.Controller;
+
+
+import ilp_submission_3.ilp_submission_image.dto.DistanceRequest;
+import ilp_submission_3.ilp_submission_image.Service.ILPServiceInterface;
+import ilp_submission_3.ilp_submission_image.dto.DistanceRequest;
+import ilp_submission_3.ilp_submission_image.dto.IsInRegionRequest;
+import ilp_submission_3.ilp_submission_image.dto.NextPositionRequest;
+import ilp_submission_3.ilp_submission_image.dto.Position;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.Set;
+/**
+ * REST controller providing geographic calculation endpoints for the ILP service.
+ * All endpoints are prefixed with /api/v1.
+ */
+@RestController
+@RequestMapping(&quot;/api/v1&quot;)
+public class ILPController {
+    private final ILPServiceInterface ilpService;
+
+<span class="fc" id="L22">    public ILPController(ILPServiceInterface ilpService) {</span>
+<span class="fc" id="L23">        this.ilpService = ilpService;</span>
+<span class="fc" id="L24">    }</span>
+
+<span class="fc" id="L26">    private static final Set&lt;Double&gt; VALID_ANGLES = Set.of(</span>
+<span class="fc" id="L27">            0.0, 22.5, 45.0, 67.5, 90.0, 112.5, 135.0, 157.5,</span>
+<span class="fc" id="L28">            180.0, 202.5, 225.0, 247.5, 270.0, 292.5, 315.0, 337.5</span>
+    );
+
+    /**
+     * Checks if a number value is invalid.
+     *
+     * @param value the Double value to check
+     * @return true if the value is null, NaN, or Infinity
+     */
+    private boolean isInValidNumber(Double value) {
+<span class="fc bfc" id="L38" title="All 4 branches covered.">        return value == null || !Double.isFinite(value);</span>
+    }
+
+    /**
+     * Checks if a position has valid longitude and latitude values.
+     *
+     * @param position the position to validate
+     * @return true if the position is valid, false otherwise
+     */
+    private boolean isInValidPosition(Position position) {
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (position == null) {</span>
+<span class="fc" id="L49">            return true;</span>
+        }
+
+        // Check if coordinates are valid numbers
+<span class="fc bfc" id="L53" title="All 4 branches covered.">        if (isInValidNumber(position.lng()) || isInValidNumber(position.lat())) {</span>
+<span class="fc" id="L54">            return true;</span>
+        }
+
+        // Check longitude range: -180 to +180
+<span class="pc bpc" id="L58" title="2 of 4 branches missed.">        if (position.lng() &lt; -180.0 || position.lng() &gt; 180.0) {</span>
+<span class="nc" id="L59">            return true;</span>
+        }
+
+        // Check latitude range: -90 to +90
+<span class="pc bpc" id="L63" title="2 of 4 branches missed.">        if (position.lat() &lt; -90.0 || position.lat() &gt; 90.0) {</span>
+<span class="nc" id="L64">            return true;</span>
+        }
+
+<span class="fc" id="L67">        return false;</span>
+    }
+
+    /**
+     * Returns the student ID.
+     *
+     * @return ResponseEntity containing the student ID as a string
+     */
+    @GetMapping(&quot;/uid&quot;)
+    public ResponseEntity&lt;String&gt; getUid() {
+<span class="fc" id="L77">        return ResponseEntity.ok(&quot;s2337850&quot;);</span>
+    }
+
+    /**
+     * Calculates the Euclidean distance between two positions.
+     *
+     * @param request contains position1 and position2
+     * @return ResponseEntity with the distance as a double, or 400 if invalid
+     */
+    @PostMapping(&quot;/distanceTo&quot;)
+    public ResponseEntity&lt;Double&gt; distance(@RequestBody DistanceRequest request) {
+        // Validate both positions
+<span class="fc bfc" id="L89" title="All 4 branches covered.">        if (isInValidPosition(request.position1()) || isInValidPosition(request.position2())) {</span>
+<span class="fc" id="L90">            return ResponseEntity.badRequest().build();</span>
+        }
+
+<span class="fc" id="L93">        return ResponseEntity.ok(ilpService.distance(request.position1(), request.position2()));</span>
+    }
+
+    /**
+     * Checks if two positions are close to each other (distance less than 0.00015).
+     *
+     * @param request contains position1 and position2
+     * @return ResponseEntity with true if close, false otherwise, or 400 if invalid
+     */
+    @PostMapping(&quot;/isCloseTo&quot;)
+    public ResponseEntity&lt;Boolean&gt; isClose(@RequestBody DistanceRequest request) {
+        // Validate both positions
+<span class="fc bfc" id="L105" title="All 4 branches covered.">        if (isInValidPosition(request.position1()) || isInValidPosition(request.position2())) {</span>
+<span class="fc" id="L106">            return ResponseEntity.badRequest().build();</span>
+        }
+
+<span class="fc" id="L109">        return ResponseEntity.ok(ilpService.isClose(request.position1(), request.position2()));</span>
+    }
+
+    /**
+     * Calculates the next position from a starting position given a compass angle.
+     *
+     * @param request contains start position and angle
+     * @return ResponseEntity with the next position, or 400 if invalid
+     */
+    @PostMapping(&quot;/nextPosition&quot;)
+    public ResponseEntity&lt;Position&gt; nextPosition(@RequestBody NextPositionRequest request) {
+        // Validate start position
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (isInValidPosition(request.start())) {</span>
+<span class="fc" id="L122">            return ResponseEntity.badRequest().build();</span>
+        }
+
+        // Validate angle is present and is a valid number
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        if (isInValidNumber(request.angle())) {</span>
+<span class="fc" id="L127">            return ResponseEntity.badRequest().build();</span>
+        }
+
+        // Validate angle is one of the 16 valid compass directions
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (!VALID_ANGLES.contains(request.angle())) {</span>
+<span class="fc" id="L132">            return ResponseEntity.badRequest().build();</span>
+        }
+
+<span class="fc" id="L135">        return ResponseEntity.ok(ilpService.nextPosition(request.start(), request.angle()));</span>
+    }
+
+    /**
+     * Checks if a point is inside or on the border of a polygon region.
+     *
+     * @param request contains position and region with vertices
+     * @return ResponseEntity with true if inside or on border, false otherwise, or 400 if invalid
+     */
+    @PostMapping(&quot;/isInRegion&quot;)
+    public ResponseEntity&lt;Boolean&gt; isInRegion(@RequestBody IsInRegionRequest request) {
+        // Validate required objects are present
+<span class="fc bfc" id="L147" title="All 4 branches covered.">        if (request.position() == null || request.region() == null ||</span>
+<span class="pc bpc" id="L148" title="1 of 4 branches missed.">                request.region().vertices() == null || request.region().name() == null) {</span>
+<span class="fc" id="L149">            return ResponseEntity.badRequest().build();</span>
+        }
+
+        // Validate position
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (isInValidPosition(request.position())) {</span>
+<span class="fc" id="L154">            return ResponseEntity.badRequest().build();</span>
+        }
+
+        // Validate vertices list is not empty
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">        if (request.region().vertices().isEmpty()) {</span>
+<span class="nc" id="L159">            return ResponseEntity.badRequest().build();</span>
+        }
+
+        // Validate each vertex
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        for (Position vertex : request.region().vertices()) {</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">            if (isInValidPosition(vertex)) {</span>
+<span class="nc" id="L165">                return ResponseEntity.badRequest().build();</span>
+            }
+<span class="fc" id="L167">        }</span>
+
+        // Validate polygon is closed (first vertex equals last vertex)
+<span class="fc" id="L170">        int vertexCount = request.region().vertices().size();</span>
+<span class="fc" id="L171">        Position firstVertex = request.region().vertices().get(0);</span>
+<span class="fc" id="L172">        Position lastVertex = request.region().vertices().get(vertexCount - 1);</span>
+
+<span class="fc bfc" id="L174" title="All 4 branches covered.">        if (!firstVertex.equals(lastVertex) || vertexCount &lt; 4) {</span>
+<span class="fc" id="L175">            return ResponseEntity.badRequest().build();</span>
+        }
+
+<span class="fc" id="L178">        return ResponseEntity.ok(ilpService.isInRegion(request.position(), request.region().vertices()));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

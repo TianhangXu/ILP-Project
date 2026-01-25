@@ -168,3 +168,11 @@ Timestamp,TestName,Scenario,ResponseTime_ms,NodesExplored,MessagesReceived,Total
 2026-01-24T04:57:28.9835931,WebSocket_Baseline,Single_Client_Normal_Load,33,0,13,0,0,PASS
 2026-01-24T04:57:32.8284253,WebSocket_Multi_Client,Five_Concurrent_Clients,32,0,155,0,0,PASS
 2026-01-24T04:57:38.2043951,WebSocket_Stress,High_Message_Volume,31,0,213,0,0,PASS
+Timestamp,TestName,Scenario,ResponseTime_ms,NodesExplored,MessagesReceived,TotalMoves,TotalCost,Status
+2026-01-25T07:20:44.7573671,A*_Baseline,Simple_Short_Distance,664,0,13,0,0.00,PASS
+2026-01-25T07:20:46.5227422,A*_Medium,Medium_Distance_With_Obstacles,749,0,31,115,26.75,PASS
+2026-01-25T07:20:48.5681642,A*_Stress,Long_Distance_Obstacles,1032,0,71,303,36.15,PASS
+2026-01-25T07:20:49.137386,A*_Multi_Delivery,Three_Orders_Optimization,565,0,0,0,0.00,PASS
+2026-01-25T07:20:51.4992278,WebSocket_Baseline,Single_Client_Normal_Load,5,0,13,0,0,PASS
+2026-01-25T07:20:54.1408641,WebSocket_Multi_Client,Five_Concurrent_Clients,9,0,155,0,0,PASS
+2026-01-25T07:20:57.1285763,WebSocket_Stress,High_Message_Volume,8,0,213,0,0,PASS

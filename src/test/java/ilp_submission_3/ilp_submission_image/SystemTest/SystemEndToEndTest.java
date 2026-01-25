@@ -554,7 +554,3 @@ class SystemEndToEndTest {
         return new MedDispatchRec(id, date, time, requirements, delivery);
     }
 }
-/**
- * Comprehensive integration tests for WebSocket PathfindingProgressHandler
- * Tests real WebSocket connections with Spring Boot context
- */

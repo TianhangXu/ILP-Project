@@ -16,7 +16,30 @@
 
     <properties>
         <java.version>21</java.version>
+        <junit.platform.version>1.12.2</junit.platform.version>
     </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-launcher</artifactId>
+                <version>${junit.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-engine</artifactId>
+                <version>${junit.platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-commons</artifactId>
+                <version>${junit.platform.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <dependencies>
         <dependency>
@@ -36,6 +59,13 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -113,6 +143,67 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.15.2</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>1.2.1</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <reportsDirectory>${project.basedir}/pit-reports</reportsDirectory>
+
+
+                    <mutators>
+                        <mutator>STRONGER</mutator>
+                    </mutators>
+
+                    <targetClasses>
+                        <param>ilp_submission_3.ilp_submission_image.Service*</param>
+                    </targetClasses>
+
+                    <targetTests>
+                        <param>**DroneServiceImplTest</param>
+                        <param>**ILPServiceImplTest</param>
+                        <param>**PathPlanningServiceImplTest</param>
+                    </targetTests>
+
+
+                    <threads>8</threads>
+
+                    <useClasspathJar>true</useClasspathJar>
+
+                    <jvmArgs>
+                        <param>-Djava.awt.headless=true</param>
+                    </jvmArgs>
+
+                    <verbose>true</verbose>
+                    <timestampedReports>false</timestampedReports>
+                    <failWhenNoMutations>false</failWhenNoMutations>
+
+                    <outputFormats>
+                        <param>HTML</param>
+                    </outputFormats>
+                </configuration>
+
+            </plugin>
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+
+
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

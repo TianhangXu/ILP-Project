@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="26.813" tests="8" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/home/runner/work/ILP-Project/ILP-Project/target/test-classes:/home/runner/work/ILP-Project/ILP-Project/target/classes:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.5.7/spring-boot-starter-web-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter/3.5.7/spring-boot-starter-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot/3.5.7/spring-boot-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.5.7/spring-boot-autoconfigure-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.5.7/spring-boot-starter-logging-3.5.7.jar:/home/runner/.m2/repository/ch/qos/logback/logback-classic/1.5.20/logback-classic-1.5.20.jar:/home/runner/.m2/repository/ch/qos/logback/logback-core/1.5.20/logback-core-1.5.20.jar:/home/runner/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.24.3/log4j-to-slf4j-2.24.3.jar:/home/runner/.m2/repository/org/apache/logging/log4j/log4j-api/2.24.3/log4j-api-2.24.3.jar:/home/runner/.m2/repository/org/slf4j/jul-to-slf4j/2.0.17/jul-to-slf4j-2.0.17.jar:/home/runner/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/home/runner/.m2/repository/org/yaml/snakeyaml/2.4/snakeyaml-2.4.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.5.7/spring-boot-starter-json-3.5.7.jar:/home/runner/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.19.2/jackson-datatype-jdk8-2.19.2.jar:/home/runner/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.19.2/jackson-datatype-jsr310-2.19.2.jar:/home/runner/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.19.2/jackson-module-parameter-names-2.19.2.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.5.7/spring-boot-starter-tomcat-3.5.7.jar:/home/runner/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.48/tomcat-embed-core-10.1.48.jar:/home/runner/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.48/tomcat-embed-el-10.1.48.jar:/home/runner/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.48/tomcat-embed-websocket-10.1.48.jar:/home/runner/.m2/repository/org/springframework/spring-web/6.2.12/spring-web-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-beans/6.2.12/spring-beans-6.2.12.jar:/home/runner/.m2/repository/io/micrometer/micrometer-observation/1.15.5/micrometer-observation-1.15.5.jar:/home/runner/.m2/repository/io/micrometer/micrometer-commons/1.15.5/micrometer-commons-1.15.5.jar:/home/runner/.m2/repository/org/springframework/spring-webmvc/6.2.12/spring-webmvc-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-aop/6.2.12/spring-aop-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-context/6.2.12/spring-context-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-expression/6.2.12/spring-expression-6.2.12.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.5.7/spring-boot-starter-test-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-test/3.5.7/spring-boot-test-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.5.7/spring-boot-test-autoconfigure-3.5.7.jar:/home/runner/.m2/repository/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar:/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/home/runner/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.4/jakarta.xml.bind-api-4.0.4.jar:/home/runner/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.4/jakarta.activation-api-2.1.4.jar:/home/runner/.m2/repository/net/minidev/json-smart/2.5.2/json-smart-2.5.2.jar:/home/runner/.m2/repository/net/minidev/accessors-smart/2.5.2/accessors-smart-2.5.2.jar:/home/runner/.m2/repository/org/ow2/asm/asm/9.7.1/asm-9.7.1.jar:/home/runner/.m2/repository/org/assertj/assertj-core/3.27.6/assertj-core-3.27.6.jar:/home/runner/.m2/repository/net/bytebuddy/byte-buddy/1.17.8/byte-buddy-1.17.8.jar:/home/runner/.m2/repository/org/awaitility/awaitility/4.2.2/awaitility-4.2.2.jar:/home/runner/.m2/repository/org/hamcrest/hamcrest/3.0/hamcrest-3.0.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter/5.12.2/junit-jupiter-5.12.2.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.12.2/junit-jupiter-api-5.12.2.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.12.2/junit-jupiter-params-5.12.2.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.12.2/junit-jupiter-engine-5.12.2.jar:/home/runner/.m2/repository/org/mockito/mockito-core/5.17.0/mockito-core-5.17.0.jar:/home/runner/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar:/home/runner/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/home/runner/.m2/repository/org/mockito/mockito-junit-jupiter/5.17.0/mockito-junit-jupiter-5.17.0.jar:/home/runner/.m2/repository/org/skyscreamer/jsonassert/1.5.3/jsonassert-1.5.3.jar:/home/runner/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/home/runner/.m2/repository/org/springframework/spring-core/6.2.12/spring-core-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-jcl/6.2.12/spring-jcl-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-test/6.2.12/spring-test-6.2.12.jar:/home/runner/.m2/repository/org/xmlunit/xmlunit-core/2.10.4/xmlunit-core-2.10.4.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-websocket/3.5.7/spring-boot-starter-websocket-3.5.7.jar:/home/runner/.m2/repository/org/springframework/spring-messaging/6.2.12/spring-messaging-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-websocket/6.2.12/spring-websocket-6.2.12.jar:/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.19.2/jackson-databind-2.19.2.jar:/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.19.2/jackson-annotations-2.19.2.jar:/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.19.2/jackson-core-2.19.2.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-launcher/1.12.2/junit-platform-launcher-1.12.2.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-engine/1.12.2/junit-platform-engine-1.12.2.jar:/home/runner/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-commons/1.12.2/junit-platform-commons-1.12.2.jar:/home/runner/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:"/>
+    <property name="java.vm.vendor" value="Eclipse Adoptium"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="catalina.useNaming" value="false"/>
+    <property name="java.vendor.url" value="https://adoptium.net/"/>
+    <property name="user.timezone" value="Etc/UTC"/>
+    <property name="os.name" value="Linux"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="APPLICATION_NAME" value="ilp_submission_image"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/temurin-21-jdk-amd64/lib"/>
+    <property name="sun.java.command" value="/home/runner/work/ILP-Project/ILP-Project/target/surefire/surefirebooter-20260125011210485_3.jar /home/runner/work/ILP-Project/ILP-Project/target/surefire 2026-01-25T01-12-10_176-jvmRun1 surefire-20260125011210485_1tmp surefire_0-20260125011210485_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/home/runner/work/ILP-Project/ILP-Project/target/test-classes:/home/runner/work/ILP-Project/ILP-Project/target/classes:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.5.7/spring-boot-starter-web-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter/3.5.7/spring-boot-starter-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot/3.5.7/spring-boot-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.5.7/spring-boot-autoconfigure-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.5.7/spring-boot-starter-logging-3.5.7.jar:/home/runner/.m2/repository/ch/qos/logback/logback-classic/1.5.20/logback-classic-1.5.20.jar:/home/runner/.m2/repository/ch/qos/logback/logback-core/1.5.20/logback-core-1.5.20.jar:/home/runner/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.24.3/log4j-to-slf4j-2.24.3.jar:/home/runner/.m2/repository/org/apache/logging/log4j/log4j-api/2.24.3/log4j-api-2.24.3.jar:/home/runner/.m2/repository/org/slf4j/jul-to-slf4j/2.0.17/jul-to-slf4j-2.0.17.jar:/home/runner/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/home/runner/.m2/repository/org/yaml/snakeyaml/2.4/snakeyaml-2.4.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.5.7/spring-boot-starter-json-3.5.7.jar:/home/runner/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.19.2/jackson-datatype-jdk8-2.19.2.jar:/home/runner/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.19.2/jackson-datatype-jsr310-2.19.2.jar:/home/runner/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.19.2/jackson-module-parameter-names-2.19.2.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.5.7/spring-boot-starter-tomcat-3.5.7.jar:/home/runner/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.48/tomcat-embed-core-10.1.48.jar:/home/runner/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.48/tomcat-embed-el-10.1.48.jar:/home/runner/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.48/tomcat-embed-websocket-10.1.48.jar:/home/runner/.m2/repository/org/springframework/spring-web/6.2.12/spring-web-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-beans/6.2.12/spring-beans-6.2.12.jar:/home/runner/.m2/repository/io/micrometer/micrometer-observation/1.15.5/micrometer-observation-1.15.5.jar:/home/runner/.m2/repository/io/micrometer/micrometer-commons/1.15.5/micrometer-commons-1.15.5.jar:/home/runner/.m2/repository/org/springframework/spring-webmvc/6.2.12/spring-webmvc-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-aop/6.2.12/spring-aop-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-context/6.2.12/spring-context-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-expression/6.2.12/spring-expression-6.2.12.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.5.7/spring-boot-starter-test-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-test/3.5.7/spring-boot-test-3.5.7.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.5.7/spring-boot-test-autoconfigure-3.5.7.jar:/home/runner/.m2/repository/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar:/home/runner/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/home/runner/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.4/jakarta.xml.bind-api-4.0.4.jar:/home/runner/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.4/jakarta.activation-api-2.1.4.jar:/home/runner/.m2/repository/net/minidev/json-smart/2.5.2/json-smart-2.5.2.jar:/home/runner/.m2/repository/net/minidev/accessors-smart/2.5.2/accessors-smart-2.5.2.jar:/home/runner/.m2/repository/org/ow2/asm/asm/9.7.1/asm-9.7.1.jar:/home/runner/.m2/repository/org/assertj/assertj-core/3.27.6/assertj-core-3.27.6.jar:/home/runner/.m2/repository/net/bytebuddy/byte-buddy/1.17.8/byte-buddy-1.17.8.jar:/home/runner/.m2/repository/org/awaitility/awaitility/4.2.2/awaitility-4.2.2.jar:/home/runner/.m2/repository/org/hamcrest/hamcrest/3.0/hamcrest-3.0.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter/5.12.2/junit-jupiter-5.12.2.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.12.2/junit-jupiter-api-5.12.2.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.12.2/junit-jupiter-params-5.12.2.jar:/home/runner/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.12.2/junit-jupiter-engine-5.12.2.jar:/home/runner/.m2/repository/org/mockito/mockito-core/5.17.0/mockito-core-5.17.0.jar:/home/runner/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar:/home/runner/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/home/runner/.m2/repository/org/mockito/mockito-junit-jupiter/5.17.0/mockito-junit-jupiter-5.17.0.jar:/home/runner/.m2/repository/org/skyscreamer/jsonassert/1.5.3/jsonassert-1.5.3.jar:/home/runner/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/home/runner/.m2/repository/org/springframework/spring-core/6.2.12/spring-core-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-jcl/6.2.12/spring-jcl-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-test/6.2.12/spring-test-6.2.12.jar:/home/runner/.m2/repository/org/xmlunit/xmlunit-core/2.10.4/xmlunit-core-2.10.4.jar:/home/runner/.m2/repository/org/springframework/boot/spring-boot-starter-websocket/3.5.7/spring-boot-starter-websocket-3.5.7.jar:/home/runner/.m2/repository/org/springframework/spring-messaging/6.2.12/spring-messaging-6.2.12.jar:/home/runner/.m2/repository/org/springframework/spring-websocket/6.2.12/spring-websocket-6.2.12.jar:/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.19.2/jackson-databind-2.19.2.jar:/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.19.2/jackson-annotations-2.19.2.jar:/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.19.2/jackson-core-2.19.2.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-launcher/1.12.2/junit-platform-launcher-1.12.2.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-engine/1.12.2/junit-platform-engine-1.12.2.jar:/home/runner/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/runner/.m2/repository/org/junit/platform/junit-platform-commons/1.12.2/junit-platform-commons-1.12.2.jar:/home/runner/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/runner"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2025-10-21"/>
+    <property name="java.home" value="/usr/lib/jvm/temurin-21-jdk-amd64"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/home/runner/work/ILP-Project/ILP-Project"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="surefire.real.class.path" value="/home/runner/work/ILP-Project/ILP-Project/target/surefire/surefirebooter-20260125011210485_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.9+10-LTS"/>
+    <property name="user.name" value="runner"/>
+    <property name="stdout.encoding" value="UTF-8"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="6.11.0-1018-azure"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Temurin-21.0.9+10"/>
+    <property name="localRepository" value="/home/runner/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="catalina.home" value="/tmp/tomcat.0.9627700897691760258"/>
+    <property name="java.version" value="21.0.9"/>
+    <property name="user.dir" value="/home/runner/work/ILP-Project/ILP-Project"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="2401"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="catalina.base" value="/tmp/tomcat.0.9627700897691760258"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="UTF-8"/>
+    <property name="java.vendor" value="Eclipse Adoptium"/>
+    <property name="java.vm.version" value="21.0.9+10-LTS"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="65.0"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[ilp_submission_image] "/>
+  </properties>
+  <testcase name="testAStarPerformanceBaseline" classname="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="2.718">
+    <system-out><![CDATA[2026-01-25T01:12:32.693Z  INFO 2401 --- [ilp_submission_image] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest]: PerformanceAndStressTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-01-25T01:12:32.702Z  INFO 2401 --- [ilp_submission_image] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration ilp_submission_3.ilp_submission_image.IlpSubmissionImageApplication for test class ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest
+
+📊 Performance results will be saved to: performance_test_results.csv
+
+
+======================================================================
+=== A* PERFORMANCE TEST 1A: BASELINE ===
+======================================================================
+✅ New WebSocket connection: 9bce7380-ef3e-516d-3082-d9777d881ffe
+📊 Total active connections: 1
+❌ WebSocket connection closed: 9bce7380-ef3e-516d-3082-d9777d881ffe
+📊 Total active connections: 0
+
+=== BASELINE RESULTS ===
+Response Time: 1714ms
+Nodes Explored: 0
+Messages Received: 13
+Total Moves: 0
+Total Cost: 0.00
+Status: PASS
+======================================================================
+
+]]></system-out>
+  </testcase>
+  <testcase name="testAStarPerformanceMedium" classname="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="2.955">
+    <system-out><![CDATA[
+======================================================================
+=== A* PERFORMANCE TEST 1B: MEDIUM COMPLEXITY ===
+======================================================================
+✅ New WebSocket connection: 46051a59-1160-6689-0db7-8c4a0bfbf66c
+📊 Total active connections: 1
+❌ WebSocket connection closed: 46051a59-1160-6689-0db7-8c4a0bfbf66c
+📊 Total active connections: 0
+
+=== MEDIUM COMPLEXITY RESULTS ===
+Response Time: 1948ms
+Nodes Explored: 0
+Messages Received: 31
+Total Moves: 115
+Total Cost: 26.75
+Status: PASS
+======================================================================
+
+]]></system-out>
+  </testcase>
+  <testcase name="testAStarPerformanceStress" classname="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="3.234">
+    <system-out><![CDATA[
+======================================================================
+=== A* PERFORMANCE TEST 1C: STRESS ===
+======================================================================
+✅ New WebSocket connection: 8b01459e-4c36-7202-3b65-b5ef5d8222e5
+📊 Total active connections: 1
+❌ WebSocket connection closed: 8b01459e-4c36-7202-3b65-b5ef5d8222e5
+📊 Total active connections: 0
+
+=== STRESS TEST RESULTS ===
+Response Time: 2228ms
+Nodes Explored: 0
+Messages Received: 71
+Total Moves: 303
+Total Cost: 36.15
+Status: PASS
+======================================================================
+
+]]></system-out>
+  </testcase>
+  <testcase name="testAStarMultiDelivery" classname="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="2.538">
+    <system-out><![CDATA[
+======================================================================
+=== A* PERFORMANCE TEST 1D: MULTI-DELIVERY ===
+======================================================================
+
+=== MULTI-DELIVERY RESULTS ===
+Response Time: 2535ms
+Orders Processed: 3
+Avg Time Per Order: 845ms
+Total Moves: 0
+Drone Paths: 0
+======================================================================
+
+]]></system-out>
+  </testcase>
+  <testcase name="testWebSocketMessageLoadBaseline" classname="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="3.534">
+    <system-out><![CDATA[
+======================================================================
+=== WEBSOCKET PERFORMANCE TEST 2A: BASELINE ===
+======================================================================
+✅ New WebSocket connection: 872d6a60-ebcd-884e-1821-4d9a2228921a
+📊 Total active connections: 1
+❌ WebSocket connection closed: 872d6a60-ebcd-884e-1821-4d9a2228921a
+📊 Total active connections: 0
+
+=== BASELINE RESULTS ===
+Connected Clients: 1
+Messages Received: 13
+Message Loss: 0
+Avg Connection Latency: 4.00ms
+Min Messages (per client): 13
+Max Messages (per client): 13
+======================================================================
+
+]]></system-out>
+  </testcase>
+  <testcase name="testWebSocketMultipleClients" classname="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="3.799">
+    <system-out><![CDATA[
+======================================================================
+=== WEBSOCKET PERFORMANCE TEST 2B: MULTI-CLIENT ===
+======================================================================
+✅ New WebSocket connection: 98af5eda-2f74-5678-eb5e-6c051c22b291
+📊 Total active connections: 1
+✅ New WebSocket connection: e22e11a5-cd61-c331-5a0b-299d9fc03499
+📊 Total active connections: 2
+✅ New WebSocket connection: caa707aa-6d35-7206-f1b3-7f8e16adbbe0
+📊 Total active connections: 3
+✅ New WebSocket connection: 7d5013c3-2c3e-a3a0-a23f-09ff7e78fa8a
+📊 Total active connections: 4
+✅ New WebSocket connection: 6a8dec91-1b96-461a-4037-7f43ea792c13
+📊 Total active connections: 5
+❌ WebSocket connection closed: e22e11a5-cd61-c331-5a0b-299d9fc03499
+📊 Total active connections: 3
+
+=== MULTI-CLIENT (5) RESULTS ===
+Connected Clients: 5
+Messages Received: 155
+Message Loss: 0
+Avg Connection Latency: 7.40ms
+Min Messages (per client): 31
+Max Messages (per client): 31
+❌ WebSocket connection closed: 7d5013c3-2c3e-a3a0-a23f-09ff7e78fa8a
+❌ WebSocket connection closed: 6a8dec91-1b96-461a-4037-7f43ea792c13
+📊 Total active connections: 2
+📊 Total active connections: 1
+======================================================================
+
+❌ WebSocket connection closed: 98af5eda-2f74-5678-eb5e-6c051c22b291
+❌ WebSocket connection closed: caa707aa-6d35-7206-f1b3-7f8e16adbbe0
+📊 Total active connections: 0
+📊 Total active connections: 0
+]]></system-out>
+  </testcase>
+  <testcase name="testWebSocketHighFrequencyStress" classname="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="4.198">
+    <system-out><![CDATA[
+======================================================================
+=== WEBSOCKET PERFORMANCE TEST 2C: HIGH FREQUENCY ===
+======================================================================
+✅ New WebSocket connection: c4f5a8fe-bd0c-4703-039e-500afdfcf7be
+📊 Total active connections: 1
+✅ New WebSocket connection: 01683df8-8de1-571d-075a-c91573c0189f
+📊 Total active connections: 2
+✅ New WebSocket connection: 5d2e7e86-764e-cfcc-cc2c-8e4f98c46b52
+📊 Total active connections: 3
+❌ WebSocket connection closed: c4f5a8fe-bd0c-4703-039e-500afdfcf7be
+❌ WebSocket connection closed: 5d2e7e86-764e-cfcc-cc2c-8e4f98c46b52
+❌ WebSocket connection closed: 01683df8-8de1-571d-075a-c91573c0189f
+📊 Total active connections: 0
+📊 Total active connections: 0
+📊 Total active connections: 0
+
+=== HIGH FREQUENCY STRESS RESULTS ===
+Connected Clients: 3
+Messages Received: 213
+Message Loss: 0
+Avg Connection Latency: 4.67ms
+Min Messages (per client): 71
+Max Messages (per client): 71
+======================================================================
+
+]]></system-out>
+  </testcase>
+  <testcase name="testCombinedStress" classname="ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest" time="3.809">
+    <system-out><![CDATA[
+======================================================================
+=== COMBINED STRESS TEST ===
+======================================================================
+✅ New WebSocket connection: 58334ff9-59e2-57e5-b73b-6fb5cf6936d8
+📊 Total active connections: 1
+✅ New WebSocket connection: 3446f604-8bab-82c8-9028-d3dd0cdfc2bf
+📊 Total active connections: 2
+✅ New WebSocket connection: 786fc1e7-5432-84c3-03ba-3c985ae0abec
+📊 Total active connections: 3
+✅ New WebSocket connection: 6f557349-7043-a638-1f14-ad7c57c571f8
+📊 Total active connections: 4
+✅ New WebSocket connection: aab02761-928a-3868-d980-e412b3df32f3
+📊 Total active connections: 5
+✅ New WebSocket connection: 7ad0a112-ddfc-099c-8ac8-c398b529a1e6
+📊 Total active connections: 6
+✅ New WebSocket connection: 772f3720-6913-b50f-6d1a-5055b6448f07
+📊 Total active connections: 7
+✅ New WebSocket connection: fc17c842-c4d5-482f-2285-1bd4a3c7aef3
+📊 Total active connections: 8
+✅ New WebSocket connection: a85878f5-6eb4-18ad-2eff-135b7fdd59b2
+📊 Total active connections: 9
+✅ New WebSocket connection: de081a07-5b33-bd7e-79ff-fa6adf338270
+📊 Total active connections: 10
+❌ WebSocket connection closed: 58334ff9-59e2-57e5-b73b-6fb5cf6936d8
+❌ WebSocket connection closed: 3446f604-8bab-82c8-9028-d3dd0cdfc2bf
+📊 Total active connections: 8
+📊 Total active connections: 8
+❌ WebSocket connection closed: 786fc1e7-5432-84c3-03ba-3c985ae0abec
+📊 Total active connections: 7
+
+=== COMBINED STRESS RESULTS ===
+Total Test Duration: 3806ms
+WebSocket Clients: 10
+Messages Received: 310
+Message Loss: 0
+Avg Latency: 11.30ms
+======================================================================
+
+❌ WebSocket connection closed: aab02761-928a-3868-d980-e412b3df32f3
+📊 Total active connections: 6
+❌ WebSocket connection closed: 6f557349-7043-a638-1f14-ad7c57c571f8
+❌ WebSocket connection closed: fc17c842-c4d5-482f-2285-1bd4a3c7aef3
+📊 Total active connections: 3
+❌ WebSocket connection closed: 772f3720-6913-b50f-6d1a-5055b6448f07
+📊 Total active connections: 2
+❌ WebSocket connection closed: a85878f5-6eb4-18ad-2eff-135b7fdd59b2
+📊 Total active connections: 1
+❌ WebSocket connection closed: 7ad0a112-ddfc-099c-8ac8-c398b529a1e6
+📊 Total active connections: 1
+📊 Total active connections: 4
+❌ WebSocket connection closed: de081a07-5b33-bd7e-79ff-fa6adf338270
+📊 Total active connections: 0
+]]></system-out>
+  </testcase>
+</testsuite>

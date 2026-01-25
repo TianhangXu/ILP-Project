@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: ilp_submission_3.ilp_submission_image.ControllerTest.DroneControllerTest$QueryEndpointTests
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.801 s -- in ilp_submission_3.ilp_submission_image.ControllerTest.DroneControllerTest$QueryEndpointTests

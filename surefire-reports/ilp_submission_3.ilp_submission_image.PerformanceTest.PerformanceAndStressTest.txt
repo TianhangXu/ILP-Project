@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 26.81 s -- in ilp_submission_3.ilp_submission_image.PerformanceTest.PerformanceAndStressTest
